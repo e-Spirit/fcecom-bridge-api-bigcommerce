@@ -22,7 +22,11 @@ const lookupUrlGet = async function (url) {
  * @returns The Storefront URL belonging to the given element.
  */
 const storefrontUrlGet = async function (type, id, lang) {
-    const url = await (type === 'category' ? Categories.getCategoryUrl(id) : type === 'product' ? Products.getProductUrl(id) : ContentPages.getContentUrl(id));
+    const url = await (type === 'category'
+        ? Categories.getCategoryUrl(id)
+        : type === 'product'
+        ? Products.getProductUrl(id)
+        : ContentPages.getContentUrl(id));
 
     return url;
 };
