@@ -43,7 +43,7 @@ The configuration is done by copying the `.env.template` file in the root direct
 ### Run bridge
 Before starting the bridge for the first time, you have to install its dependencies:
 ```
-npm ci
+npm install
 ```
 
 To start the bridge run:
