@@ -79,7 +79,7 @@ const contentPagesContentIdPut = async (payload, lang, contentId) => {
  * @param {string} lang The language of the request.
  * @param {number} contentId ID of the page to delete.
  */
-const contentPagesContentIdDelete = async (lang, contentId) => {
+const contentPagesContentIdDelete = async (contentId, lang) => {
     await httpClient.delete(`/v3/content/pages/${contentId}`);
     invalidateContentCache();
 };
@@ -103,7 +103,7 @@ const contentPagesGet = async (query, lang, page) => {
         data: { data }
     } = await httpClient.get(`/v3/content/pages?${searchParams}`);
 
-    data.forEach(({ id, url }) => url && (idCache.set(id, url), idCache.set(url, id)));
+    data.forEach(({ id, url }) => url && (idCache.set(`${id}`, url), idCache.set(url, id)));
     idCache.set('/', '/'); // Homepage
 
     const contentPages = data.map(({ id, name: label, url: extract }) => ({ id, label, extract }));

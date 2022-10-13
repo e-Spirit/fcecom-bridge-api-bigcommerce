@@ -28,10 +28,10 @@ describe('ContentPagesService', () => {
             expect(httpClient.get.mock.calls.length).toEqual(1);
         });
         it('returns the correct URL', async () => {
-            const contentId = data.fetchContents.data[1].id;
+            const contentId= data.fetchContents.data[1].id;
             httpClient.get.mockResolvedValue({ data: data.fetchContents });
 
-            const result = await service.getContentUrl(contentId);
+            const result = await service.getContentUrl(contentId.toString());
 
             expect(result).toEqual({ url: data.fetchContents.data[1].url });
         });
@@ -295,7 +295,7 @@ describe('ContentPagesService', () => {
         it('deletes the page by sending a DELETE request', async () => {
             const contentId = 123;
 
-            await service.contentPagesContentIdDelete('EN', contentId);
+            await service.contentPagesContentIdDelete(contentId, 'EN');
 
             expect(httpClient.delete.mock.calls[0][0]).toEqual(`/v3/content/pages/${contentId}`);
         });

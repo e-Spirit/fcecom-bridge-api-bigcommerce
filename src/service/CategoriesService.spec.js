@@ -7,9 +7,10 @@ jest.mock('../../src/utils/http-client');
 describe('CategoriesService', () => {
     describe('getCategoryUrl', () => {
         it('returns the URL of the given category', async () => {
+            const categoryId= data.categoriesGet.data[0].id;
             httpClient.get.mockResolvedValue({ data: data.categoriesGet });
 
-            const result = await service.getCategoryUrl(data.categoriesGet.data[0].id);
+            const result = await service.getCategoryUrl(categoryId.toString());
 
             expect(result).toEqual({ url: data.categoriesGet.data[0].custom_url.url });
             expect(httpClient.get.mock.calls[0][0]).toEqual(

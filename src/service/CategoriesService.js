@@ -34,7 +34,7 @@ const fetchCategories = async () => {
 
     // Store IDs in cache
     categories.forEach(({ id, custom_url: { url } }) => {
-        idCache.set(id, url);
+        idCache.set(`${id}`, url);
     });
 
     return categories;
