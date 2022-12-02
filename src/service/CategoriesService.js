@@ -1,3 +1,4 @@
+const { getNumber } = require('fcecom-bridge-commons');
 const httpClient = require('../utils/http-client');
 
 const LIMIT = 50;
@@ -18,7 +19,7 @@ const fetchCategories = async () => {
             limit: 250, // Use max limit BigCommerce allows in order to have as few requests as possible
             ...(page && { page })
         });
-        const { data: { data: categories = [], meta: { pagination } } = {} } = await httpClient.get(
+        const { data: { data: categories = [], meta: { pagination } = {} } = {} } = await httpClient.get(
             `/v3/catalog/categories?${searchParams}`
         );
 
@@ -66,7 +67,7 @@ const buildCategoryTree = (categories, parentId = 0) => {
  * @return Promise<{ hasNext: boolean, total: number, categories: any[]}> The category tree.
  */
 const categoriesGet = async (parentId, lang, page = 1) => {
-    parentId = parentId && parseInt(parentId);
+    parentId = parentId && getNumber(parentId, 'parentId');
 
     const categories = await fetchCategories();
 
@@ -91,7 +92,7 @@ const categoriesGet = async (parentId, lang, page = 1) => {
  * @return Promise<{ hasNext: boolean, total: number, categories: any[]}> The category tree.
  */
 const categoryTreeGet = async (parentId) => {
-    parentId = parentId && parseInt(parentId);
+    parentId = parentId && getNumber(parentId, 'parentId');
 
     const categories = await fetchCategories();
 
@@ -144,9 +145,10 @@ const flattenCategories = (categories) => {
  * @return {{url: string}} The URL of the category, null if given ID is invalid.
  */
 const getCategoryUrl = async (categoryId) => {
+    categoryId = getNumber(categoryId, 'categoryId');
     idCache.size || (await fetchCategories());
-    if (idCache.has(categoryId)) {
-        return { url: idCache.get(categoryId) };
+    if (idCache.has(categoryId.toString())) {
+        return { url: idCache.get(categoryId.toString()) };
     } else {
         console.error('Invalid categoryId passed', categoryId);
         return null;

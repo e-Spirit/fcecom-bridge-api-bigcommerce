@@ -2,6 +2,7 @@ const ContentPages = require('./ContentPagesService');
 const Categories = require('./CategoriesService');
 const Products = require('./ProductsService');
 const LookupUrlService = require('./LookupUrlService');
+const { getNumber } = require('fcecom-bridge-commons');
 
 /**
  * This method returns an identifier for a given Storefront URL which is used in FirstSpirit to identify the page.
@@ -22,6 +23,7 @@ const lookupUrlGet = async function (url) {
  * @returns The Storefront URL belonging to the given element.
  */
 const storefrontUrlGet = async function (type, id, lang) {
+    id = getNumber(id, 'id');
     const url = await (type === 'category'
         ? Categories.getCategoryUrl(id)
         : type === 'product'

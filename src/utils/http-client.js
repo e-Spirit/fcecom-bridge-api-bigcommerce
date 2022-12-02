@@ -17,6 +17,8 @@ client.interceptors.response.use(
     (error) => {
         const { message, response } = (lastError = error);
         const details = response?.data?.detail || message;
+        const data = response?.data || message;
+        const status = response?.status || 500;
         if (response) {
             logger.logError(
                 ` ↳ ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${
@@ -26,7 +28,7 @@ client.interceptors.response.use(
         } else {
             logger.logError(` ↳ ${message}`);
         }
-        return Promise.reject({ error: true, message: details });
+        return Promise.reject({ error: true, data, status });
     }
 );
 
@@ -55,6 +57,8 @@ gqlClient.interceptors.response.use(
     ),
     (error) => {
         const { message, response } = (lastError = error);
+        const data = response?.data || message;
+        const status = response?.status || 500;
         if (error && error.config && !error.config.isRetry && error.response.status == 401) {
             gqlToken = null;
             return gqlClient({ isRetry: true, ...error.config });
@@ -65,7 +69,7 @@ gqlClient.interceptors.response.use(
                 }\n   ${message}`
             );
         }
-        return Promise.reject({ error: true, message });
+        return Promise.reject({ error: true, data, status });
     }
 );
 

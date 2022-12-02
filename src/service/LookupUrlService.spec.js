@@ -9,7 +9,7 @@ describe('LookupUrlCtrl', () => {
     describe('lookup', () => {
         it('returns an identifier (looked up via GQL)', async () => {
             const url = '/SOME-URL/';
-            const gqlResponse = { data: { data: { site: { route: { node: { entityId: 'SOME_ID', __typename: 'TYPENAME' } } } } } };
+            const gqlResponse = { data: { data: { site: { route: { node: { entityId: 'SOME_ID', __typename: 'TYPENAME' } } } } }, status: 200 };
             httpClient.gql.mockResolvedValue(gqlResponse);
             const lookupContentUrlResponse = { id: '/SOME-URL-ID/', type: 'content' };
             ContentPages.lookupContentUrl.mockResolvedValue(lookupContentUrlResponse);
@@ -28,7 +28,7 @@ describe('LookupUrlCtrl', () => {
         });
         it('returns an identifier (looked up via ContentsCtrl if not found via GQL)', async () => {
             const url = '/SOME-URL/';
-            const gqlResponse = { data: {} };
+            const gqlResponse = { data: {}, status: 200 };
             httpClient.gql.mockResolvedValue(gqlResponse);
             const lookupContentUrlResponse = { id: '/SOME-URL-ID/', type: 'content' };
             ContentPages.lookupContentUrl.mockResolvedValue(lookupContentUrlResponse);
@@ -42,7 +42,7 @@ describe('LookupUrlCtrl', () => {
         });
         it('returns an empty object (if not found via GQL or ContentsCtrl)', async () => {
             const url = '/SOME-URL/';
-            const gqlResponse = { data: {} };
+            const gqlResponse = { data: {}, status: 200 };
             httpClient.gql.mockResolvedValue(gqlResponse);
             const lookupContentUrlResponse = null;
             ContentPages.lookupContentUrl.mockResolvedValue(lookupContentUrlResponse);

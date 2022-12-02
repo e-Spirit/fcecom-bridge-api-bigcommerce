@@ -6,13 +6,14 @@ jest.mock('../../src/utils/http-client');
 
 describe('ProductsService', () => {
     describe('productsGet', () => {
+        const categoryId = 456;
+        const keyword = 'KEYWORD';
+        const lang = 'EN';
+        const page = 1;
         it('fetches product data and maps it to internal type', async () => {
-            const categoryId = 456;
-            const keyword = 'KEYWORD';
-            const lang = 'EN';
-            const page = 1;
 
-            httpClient.get.mockResolvedValue({ data: data.fetchProducts });
+
+            httpClient.get.mockResolvedValue({ data: data.fetchProducts, status: 200 });
 
             const result = await service.productsGet(categoryId, keyword, lang, page);
 
@@ -35,7 +36,7 @@ describe('ProductsService', () => {
     describe('productsProductIdsGet', () => {
         it('fetches product data by ID and maps it to internal type', async () => {
             const procutIds = [data.fetchProducts.data[0].id.toString(), '-999'];
-            httpClient.get.mockResolvedValue({ data: data.fetchProducts });
+            httpClient.get.mockResolvedValue({ data: data.fetchProducts, status: 200 });
 
             const result = await service.productsProductIdsGet(procutIds);
 
@@ -55,8 +56,8 @@ describe('ProductsService', () => {
     });
     describe('getProductUrl', () => {
         it('returns the correct URL', async () => {
-            const productId = data.getProductUrl.id;
-            httpClient.get.mockResolvedValue({ data: data.getProductUrl });
+            const productId = data.getProductUrl.data.id;
+            httpClient.get.mockResolvedValue({ data: data.getProductUrl, status: 200 });
 
             const result = await service.getProductUrl(productId);
 

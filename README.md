@@ -17,7 +17,6 @@ This project implements the bridge API to connect FirstSpirit and the BigCommerc
 For more information about BigCommerce visit [the BigCommerce website](https://www.bigcommerce.com/).
 Lean more about their API [here](https://developer.bigcommerce.com/docs/ZG9jOjIyMDYwNQ-about-our-ap-is).
 
-
 ## Prerequisites
 - Server running node 14 or later
 - BigCommerce shop instance

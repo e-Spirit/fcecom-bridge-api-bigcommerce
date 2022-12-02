@@ -1,3 +1,4 @@
+const { getNumber } = require('fcecom-bridge-commons');
 const httpClient = require('../utils/http-client');
 
 /**
@@ -10,6 +11,8 @@ const httpClient = require('../utils/http-client');
  * @return The fetched products.
  */
 const productsGet = async (categoryId, keyword, lang, page = 1) => {
+    categoryId = categoryId && getNumber(categoryId, 'categoryId');
+
     const searchParams = new URLSearchParams({
         page,
         include_fields: 'name,sku',
@@ -55,6 +58,7 @@ const productsProductIdsGet = async (productIds) => {
  * @return {{url: string}} The URL of the given product, null if given ID is invalid.
  */
 const getProductUrl = async (productId) => {
+    productId = getNumber(productId, 'productId');
     const { data = {} } = await httpClient.get(`/v3/catalog/products/${productId}?include_fields=custom_url`);
     const url = data.data?.custom_url?.url;
     return url ? { url } : null;

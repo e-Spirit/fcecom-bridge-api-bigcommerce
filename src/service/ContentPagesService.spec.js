@@ -12,7 +12,7 @@ describe('ContentPagesService', () => {
     describe('getContentUrl', () => {
         it('fills the cache when it is currently empty', async () => {
             const contentId = 123;
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             await service.getContentUrl(contentId);
 
@@ -20,7 +20,7 @@ describe('ContentPagesService', () => {
         });
         it('does not fill the cache when it is not empty', async () => {
             const contentId = 123;
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
             await service.contentPagesGet(); // Prefill cache
 
             await service.getContentUrl(contentId);
@@ -29,7 +29,7 @@ describe('ContentPagesService', () => {
         });
         it('returns the correct URL', async () => {
             const contentId= data.fetchContents.data[1].id;
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             const result = await service.getContentUrl(contentId.toString());
 
@@ -37,7 +37,7 @@ describe('ContentPagesService', () => {
         });
         it('returns null for invalid IDs', async () => {
             const contentId = -999;
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             const result = await service.getContentUrl(contentId);
 
@@ -47,7 +47,7 @@ describe('ContentPagesService', () => {
     describe('lookupContentUrl', () => {
         it('fills the cache when it is currently empty', async () => {
             const contentUrl = '/some-url/';
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             await service.lookupContentUrl(contentUrl);
 
@@ -55,7 +55,7 @@ describe('ContentPagesService', () => {
         });
         it('does not fill the cache when it is not empty', async () => {
             const contentUrl = '/some-url/';
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
             await service.contentPagesGet(); // Prefill cache
 
             await service.lookupContentUrl(contentUrl);
@@ -64,7 +64,7 @@ describe('ContentPagesService', () => {
         });
         it('returns the correct information', async () => {
             const contentUrl = data.fetchContents.data[1].url;
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             const result = await service.lookupContentUrl(contentUrl);
 
@@ -73,7 +73,7 @@ describe('ContentPagesService', () => {
         });
         it('returns an empty object for invalid URLS', async () => {
             const contentUrl = '/invalid-url/';
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             const result = await service.lookupContentUrl(contentUrl);
 
@@ -83,7 +83,7 @@ describe('ContentPagesService', () => {
     describe('invalidateContentCache', () => {
         it('clears the cache', async () => {
             const contentId = data.fetchContents.data[1].id;
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
             await service.getContentUrl(contentId); // Prefill cache
 
             service.invalidateContentCache();
@@ -96,7 +96,7 @@ describe('ContentPagesService', () => {
     describe('contentPagesContentIdsGet', () => {
         it('returns the content pages with the given IDs', async () => {
             const contentIds = [data.fetchContents.data[1].id, -999];
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             const result = await service.contentPagesContentIdsGet(contentIds);
 
@@ -106,7 +106,7 @@ describe('ContentPagesService', () => {
     });
     describe('contentPagesGet', () => {
         it('returns all content pages', async () => {
-            httpClient.get.mockResolvedValue({ data: data.fetchContents });
+            httpClient.get.mockResolvedValue({ data: data.fetchContents, status: 200 });
 
             const result = await service.contentPagesGet();
 
@@ -125,7 +125,7 @@ describe('ContentPagesService', () => {
                 nextSiblingId: 456
             };
             const sortOrder = 6;
-            const nextSiblingResponse = { data: { sort_order: sortOrder } };
+            const nextSiblingResponse = { data: { sort_order: sortOrder }, status: 200 };
             httpClient.get.mockResolvedValue(nextSiblingResponse);
 
             const result = await service.createPagePayload(body);
@@ -209,17 +209,17 @@ describe('ContentPagesService', () => {
         });
     });
     describe('contentPagesPost', () => {
+        const body = {
+            template: 'homepage',
+            label: 'LABEL',
+            visible: true,
+            parentId: undefined,
+            nextSiblingId: undefined
+        };
         it('creates the page by sending a POST request', async () => {
-            const body = {
-                template: 'homepage',
-                label: 'LABEL',
-                visible: true,
-                parentId: undefined,
-                nextSiblingId: undefined
-            };
-            const postResponse = { data: { data: { id: 123 } }, error: false };
+            const postResponse = { data: { data: { id: 123 } }, error: false, status: 200 };
             httpClient.post.mockResolvedValue(postResponse);
-            const putResponse = { data: { data: { id: 123 } } };
+            const putResponse = { data: { data: { id: 123 } }, status: 200 };
             httpClient.put.mockResolvedValue(putResponse);
 
             const result = await service.contentPagesPost(body);
@@ -236,13 +236,6 @@ describe('ContentPagesService', () => {
             expect(result).toEqual(putResponse.data.data);
         });
         it('throws an error in case the request fails (no message on last error)', async () => {
-            const body = {
-                template: 'homepage',
-                label: 'LABEL',
-                visible: true,
-                parentId: undefined,
-                nextSiblingId: undefined
-            };
             const postResponse = { data: { data: { id: 123 } }, error: true };
             httpClient.post.mockResolvedValue(postResponse);
             const expectedError = 'ERROR';
@@ -252,13 +245,6 @@ describe('ContentPagesService', () => {
             expect(httpClient.put.mock.calls.length).toEqual(0);
         });
         it('throws an error in case the request fails (with message on last error)', async () => {
-            const body = {
-                template: 'homepage',
-                label: 'LABEL',
-                visible: true,
-                parentId: undefined,
-                nextSiblingId: undefined
-            };
             const postResponse = { data: { data: { id: 123 } }, error: true };
             httpClient.post.mockResolvedValue(postResponse);
             const expectedError = 'ERROR';
@@ -269,15 +255,18 @@ describe('ContentPagesService', () => {
         });
     });
     describe('contentPagesContentIdPut', () => {
+        const contentId = 123;
+        const payload = {
+            template: 'homepage',
+            label: 'LABEL',
+            visible: true,
+            parentId: undefined,
+            nextSiblingId: undefined
+        };
         it('edits the page by sending a PUT request', async () => {
-            const contentId = 123;
-            const payload = {
-                template: 'homepage',
-                label: 'LABEL',
-                visible: true,
-                parentId: undefined,
-                nextSiblingId: undefined
-            };
+
+            const testResponse = { data: {} , status: 200 };
+            httpClient.put.mockResolvedValue(testResponse);
 
             await service.contentPagesContentIdPut(payload, 'EN', contentId);
 
@@ -289,16 +278,17 @@ describe('ContentPagesService', () => {
             expect(httpClient.put.mock.calls[0][1].parent_id).toEqual(undefined);
             expect(httpClient.put.mock.calls[0][1].sort_order).toEqual(undefined);
         });
-        it.todo('throws an error in case the request fails');
     });
     describe('contentPagesContentIdDelete', () => {
         it('deletes the page by sending a DELETE request', async () => {
+            const testResponse = { data: {} , status: 200 };
+            httpClient.delete.mockResolvedValue(testResponse);
+
             const contentId = 123;
 
             await service.contentPagesContentIdDelete(contentId, 'EN');
 
             expect(httpClient.delete.mock.calls[0][0]).toEqual(`/v3/content/pages/${contentId}`);
         });
-        it.todo('throws an error in case the request fails');
     });
 });

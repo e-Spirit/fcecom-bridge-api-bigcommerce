@@ -1,3 +1,4 @@
+const { getNumber } = require('fcecom-bridge-commons');
 const httpClient = require('../utils/http-client');
 
 // Map to cache content IDs in order to resolve their URLs later
@@ -63,13 +64,14 @@ const contentPagesPost = async (payload) => {
 /**
  * This method moves or renames a page using the BigCommerce API.
  *
- * @param {number} contentId ID of the page to move or rename.
  * @param {string} [lang] The language of the request.
  * @param {object} payload Payload created using `createPagePayload` containing the new values.
+ * @param {number} contentId ID of the page to move or rename.
  */
 const contentPagesContentIdPut = async (payload, lang, contentId) => {
+    contentId = getNumber(contentId, 'contentId');
     payload = await createPagePayload(payload);
-    const result = await httpClient.put(`/v3/content/pages/${contentId}`, payload);
+    await httpClient.put(`/v3/content/pages/${contentId}`, payload);
     invalidateContentCache();
 };
 
@@ -80,6 +82,7 @@ const contentPagesContentIdPut = async (payload, lang, contentId) => {
  * @param {number} contentId ID of the page to delete.
  */
 const contentPagesContentIdDelete = async (contentId, lang) => {
+    contentId = getNumber(contentId, 'contentId');
     await httpClient.delete(`/v3/content/pages/${contentId}`);
     invalidateContentCache();
 };
@@ -102,7 +105,6 @@ const contentPagesGet = async (query, lang, page) => {
     const {
         data: { data }
     } = await httpClient.get(`/v3/content/pages?${searchParams}`);
-
     data.forEach(({ id, url }) => url && (idCache.set(`${id}`, url), idCache.set(url, id)));
     idCache.set('/', '/'); // Homepage
 
