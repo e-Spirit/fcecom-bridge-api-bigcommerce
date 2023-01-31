@@ -1,5 +1,6 @@
 const axios = require('axios');
 const logger = require('./logger');
+const errorMapper = require('./error-mapper');
 
 const { API_BASE_URL, ACCESS_TOKEN } = process.env;
 const client = axios.create({
@@ -25,6 +26,7 @@ client.interceptors.response.use(
                     response.statusText
                 }\n\t${details}`
             );
+            errorMapper.mapErrors(response);
         } else {
             logger.logError(` ↳ ${message}`);
         }
