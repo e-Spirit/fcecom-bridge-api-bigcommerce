@@ -1,5 +1,8 @@
 const { getNumber } = require('fcecom-bridge-commons');
 const httpClient = require('../utils/http-client');
+const logger = require('../utils/logger');
+
+const LOGGING_NAME = 'ProductsService';
 
 /**
  * This method fetches all products and transforms them into the internal model.
@@ -20,6 +23,8 @@ const productsGet = async (categoryId, keyword, lang, page = 1) => {
         ...(keyword && { keyword }),
         ...(categoryId && { 'categories:in': categoryId })
     });
+
+    logger.logDebug(LOGGING_NAME, `Performing GET request to /v3/catalog/products with parameters ${searchParams}`);
 
     const { data: { data = [], meta = {} } = {} } = await httpClient.get(`/v3/catalog/products?${searchParams}`);
     const { total = 0, current_page = 0, total_pages = 0 } = meta.pagination || {};
@@ -59,6 +64,8 @@ const productsProductIdsGet = async (productIds) => {
  */
 const getProductUrl = async (productId) => {
     productId = getNumber(productId, 'productId');
+    logger.logDebug(LOGGING_NAME, `Performing GET request to /v3/catalog/products with parameters ${productId}?include_fields=custom_url`);
+
     const { data = {} } = await httpClient.get(`/v3/catalog/products/${productId}?include_fields=custom_url`);
     const url = data.data?.custom_url?.url;
     return url ? { url } : null;

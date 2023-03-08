@@ -8,11 +8,16 @@ const client = axios.create({
     headers: { 'X-Auth-Token': ACCESS_TOKEN }
 });
 
+const LOGGING_NAME = 'http-client';
+
 let lastError;
 
 client.interceptors.response.use(
     (response) => {
-        logger.logInfo(` ↳ ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${response.statusText}`);
+        logger.logInfo(
+            LOGGING_NAME,
+            `↳ Received response ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${response.statusText}`
+        );
         return response;
     },
     (error) => {
@@ -22,13 +27,14 @@ client.interceptors.response.use(
         const status = response?.status || 500;
         if (response) {
             logger.logError(
-                ` ↳ ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${
+                LOGGING_NAME,
+                `↳ Received response ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${
                     response.statusText
-                }\n\t${details}`
+                } ${details}`
             );
             errorMapper.mapErrors(response);
         } else {
-            logger.logError(` ↳ ${message}`);
+            logger.logError(LOGGING_NAME, `↳ ${message}`);
         }
         return Promise.reject({ error: true, data, status });
     }
@@ -54,7 +60,10 @@ gqlClient.interceptors.request.use(async (config) => {
 
 gqlClient.interceptors.response.use(
     (response) => (
-        logger.logInfo(` ↳ ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${response.statusText}`),
+        logger.logInfo(
+            LOGGING_NAME,
+            `↳ Received response ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${response.statusText}`
+        ),
         response
     ),
     (error) => {
@@ -66,9 +75,10 @@ gqlClient.interceptors.response.use(
             return gqlClient({ isRetry: true, ...error.config });
         } else if (response && response.config) {
             logger.logError(
-                ` ↳ ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${
+                LOGGING_NAME,
+                `↳ Received response ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status} ${
                     response.statusText
-                }\n   ${message}`
+                } ${message}`
             );
         }
         return Promise.reject({ error: true, data, status });

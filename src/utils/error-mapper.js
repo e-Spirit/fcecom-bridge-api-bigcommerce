@@ -1,6 +1,8 @@
 const logger = require('./logger');
 const { BodyValidationError, ErrorCode } = require('fcecom-bridge-commons');
 
+const loggingName = 'error-mapper';
+
 const COULD_NOT_MAP_ERROR = 'Could not map error, please check the shop system logs.';
 
 const mapError = (response) => {
@@ -10,7 +12,7 @@ const mapError = (response) => {
     if (method === 'post' || method === 'put') {
         mapCreationError(error);
     } else {
-        logger.logDebug(COULD_NOT_MAP_ERROR);
+        logger.logError(loggingName, COULD_NOT_MAP_ERROR);
     }
 };
 
@@ -23,7 +25,7 @@ const mapCreationError = (error) => {
         };
         throw new BodyValidationError('Invalid field in body', { cause: [mappedError] });
     } else {
-        logger.logDebug(COULD_NOT_MAP_ERROR);
+        logger.logError(loggingName, COULD_NOT_MAP_ERROR);
     }
 };
 

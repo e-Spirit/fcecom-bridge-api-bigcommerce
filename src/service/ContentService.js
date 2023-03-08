@@ -1,4 +1,7 @@
 const httpClient = require('../utils/http-client');
+const logger = require('../utils/logger');
+
+const LOGGING_NAME = 'ContentService';
 
 // Map to cache content IDs in order to resolve their URLs later
 const idCache = new Map();
@@ -43,6 +46,8 @@ const createPagePayload = async ({ template, label, released, path }) => {
 const contentPost = async (payload) => {
     payload = await createPagePayload(payload);
 
+    logger.logDebug(LOGGING_NAME, `Performing POST request to /v3/content/pages with parameters ${JSON.stringify(payload)}`);
+
     const {
         data: { data: page = {} },
         error = false
@@ -51,8 +56,12 @@ const contentPost = async (payload) => {
         throw new Error(httpClient.getLastError().response?.data?.[0]?.message || `${httpClient.getLastError()}`);
     } else {
         invalidateContentCache();
+        const body = `<code style="background-color:#eee;padding:0.2em 0.5em;border:1px solid #bbb;border-radius:3px">&lt;caas-content content="${page.id}" /&gt;</code>`;
+
+        logger.logDebug(LOGGING_NAME, `Performing PUT request to /v3/content/pages/${page.id} with body ${JSON.stringify(body)}`);
+
         const { data: response } = await httpClient.put(`/v3/content/pages/${page.id}`, {
-            body: `<code style="background-color:#eee;padding:0.2em 0.5em;border:1px solid #bbb;border-radius:3px">&lt;caas-content content="${page.id}" /&gt;</code>`
+            body: body
         });
         return { id: response.data.id };
     }
@@ -66,6 +75,9 @@ const contentPost = async (payload) => {
  */
 const contentContentIdPut = async (payload, contentId) => {
     payload = await createPagePayload(payload);
+
+    logger.logDebug(LOGGING_NAME, `Performing PUT request to /v3/content/pages/${contentId} with body ${JSON.stringify(payload)}`);
+
     await httpClient.put(`/v3/content/pages/${contentId}`, payload);
     invalidateContentCache();
 };
@@ -76,6 +88,8 @@ const contentContentIdPut = async (payload, contentId) => {
  * @param {number} contentId ID of the page to delete.
  */
 const contentContentIdDelete = async (contentId) => {
+    logger.logDebug(LOGGING_NAME, `Performing DELETE request to /v3/content/pages/${contentId}`);
+
     await httpClient.delete(`/v3/content/pages/${contentId}`);
     invalidateContentCache();
 };
@@ -95,8 +109,11 @@ const contentGet = async (query, lang, page) => {
         ...(query && { 'name:like': query }),
         limit: 250
     });
+
+    logger.logDebug(LOGGING_NAME, `Performing GET request to /v3/content/pages/ with parameters ${searchParams}`);
+
     const {
-        data: { data },
+        data: { data }
     } = await httpClient.get(`/v3/content/pages?${searchParams}`);
     data.forEach(({ id, url }) => url && (idCache.set(`${id}`, url), idCache.set(url, id)));
     idCache.set('/', '/'); // Homepage
@@ -129,6 +146,8 @@ const contentContentIdsGet = async (contentIds) => {
  * Should be called after creating, editing or deleting pages.
  */
 const invalidateContentCache = () => {
+    logger.logDebug(LOGGING_NAME, 'Invalidated content cache');
+
     idCache.clear();
 };
 

@@ -1,5 +1,8 @@
 const { getNumber } = require('fcecom-bridge-commons');
 const httpClient = require('../utils/http-client');
+const logger = require('../utils/logger');
+
+const LOGGING_NAME = 'CategoriesService';
 
 const LIMIT = 50;
 
@@ -19,6 +22,7 @@ const fetchCategories = async () => {
             limit: 250, // Use max limit BigCommerce allows in order to have as few requests as possible
             ...(page && { page })
         });
+        logger.logDebug(LOGGING_NAME, `Performing GET request to /v3/catalog/categories with parameters ${searchParams}`);
         const { data: { data: categories = [], meta: { pagination } = {} } = {} } = await httpClient.get(
             `/v3/catalog/categories?${searchParams}`
         );
@@ -150,7 +154,7 @@ const getCategoryUrl = async (categoryId) => {
     if (idCache.has(categoryId.toString())) {
         return { url: idCache.get(categoryId.toString()) };
     } else {
-        console.error('Invalid categoryId passed', categoryId);
+        logger.logError(LOGGING_NAME, 'Invalid categoryId passed: ' + categoryId);
         return null;
     }
 };
