@@ -1,7 +1,7 @@
 {
   "name": "fcecom-bridge-api-bigcommerce",
   "description": "FirstSpirit Connect for E-Commerce - BigCommerce Bridge",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
   "dependencies": {
     "axios": "^0.21.4",
     "dotenv": "^8.2.0",
-    "fcecom-bridge-commons": "^1.5.1"
+    "fcecom-bridge-commons": "^1.5.2"
   },
   "devDependencies": {
     "jest": "^29.3.1",
