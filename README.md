@@ -18,7 +18,7 @@ For more information about BigCommerce visit [the BigCommerce website](https://w
 Lean more about their API [here](https://developer.bigcommerce.com/docs/ZG9jOjIyMDYwNQ-about-our-ap-is).
 
 ## Prerequisites
-- Server running node 14 or later
+- Server running node 18 or later
 - BigCommerce shop instance
 - Access token for the BigCommerce API (REST and GraphQL)
 
