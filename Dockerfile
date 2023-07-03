@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM docker.artifactory.e-spirit.de/node:18-alpine
 
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
