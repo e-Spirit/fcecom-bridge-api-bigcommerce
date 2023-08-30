@@ -1,6 +1,6 @@
 const httpClient = require('../utils/http-client');
 const service = require('./ContentService');
-const data = require('./ContentPagesService.spec.data');
+const data = require('./ContentService.spec.data');
 
 jest.mock('../../src/utils/http-client');
 

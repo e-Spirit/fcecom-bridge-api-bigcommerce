@@ -1,9 +1,9 @@
 const httpClient = require('../utils/http-client');
 const service = require('./LookupUrlService');
-const ContentPages = require('./ContentPagesService');
+const ContentPages = require('./ContentService');
 
 jest.mock('../../src/utils/http-client');
-jest.mock('../../src/service/ContentPagesService');
+jest.mock('../../src/service/ContentService');
 
 describe('LookupUrlCtrl', () => {
     describe('lookup', () => {

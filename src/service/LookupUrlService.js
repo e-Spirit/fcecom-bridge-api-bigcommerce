@@ -1,5 +1,5 @@
 const httpClient = require('../utils/http-client');
-const ContentPages = require('./ContentPagesService');
+const ContentPages = require('./ContentService');
 const logger = require('../utils/logger');
 
 const LOGGING_NAME = 'LookupUrlService';
