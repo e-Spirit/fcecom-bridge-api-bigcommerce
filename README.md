@@ -28,7 +28,7 @@ Lean more about their API [here](https://developer.bigcommerce.com/docs/ZG9jOjIy
 The configuration is done by copying the `.env.template` file in the root directory to a `.env` file and editing it.
 
 | Param                | Description                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | PORT                 | The port on which the bridge is started.                                                                                                                    |
 | BRIDGE_AUTH_USERNAME | The username to access the bridge's API.                                                                                                                    |
 | BRIDGE_AUTH_PASSWORD | The password to access the bridge's API.                                                                                                                    |
@@ -62,7 +62,32 @@ npm run start:watch
 Open http://localhost:3000/docs in your browser to display the bridge's interactive API documentation.
 
 ### Configure FirstSpirit Module
-In order to enable the Connect for Commerce FirstSpirit Module to communicate with the bridge, you have to configure it. Please refer to [the documentation](https://docs.e-spirit.com/ecom/fsconnect-com/FirstSpirit_Connect_for_Commerce_Documentation_EN.html#install_pcomp) to learn how to achive this. 
+In order to enable the Connect for Commerce FirstSpirit Module to communicate with the bridge, you have to configure it. Please refer to [the documentation](https://docs.e-spirit.com/ecom/fsconnect-com/FirstSpirit_Connect_for_Commerce_Documentation_EN.html#install_pcomp) to learn how to achive this.
+
+### Multi-Tenant Support
+We provide an example `Dockerfile` and `docker-compose.yml` to enable multi-tenant support for this service.
+
+Build and tag the Docker image with a custom name and version:
+```docker
+docker build -t <IMAGE_NAME>:<VERSION> .
+```
+
+The `docker-compose.yml` demonstrates how to define multiple instances of the bridge with a different configuration.
+
+Replace `<IMAGE_NAME>:<VERSION>` with the name and tag that you chose for your Docker image.
+Each configuration for an instance is set with a different `.env.*` file. The path to it needs to be defined under `env_file`.
+
+Start the containers:
+```docker
+docker compose up -d
+```
+
+Stop the containers:
+```docker
+docker compose down
+```
+
+Please be aware that the Docker containers need to be accessible from your FirstSpirit instance in order to work with the Connect for Commerce module. A deployment to a Cloud provider might be necessary for this.
 
 ## Legal Notices
 The FirstSpirit Connect for Commerce BigCommerce bridge is a product of [Crownpeak Technology GmbH](https://www.crownpeak.com), Dortmund, Germany. The FirstSpirit Connect for Commerce BigCommerce bridge is subject to the Apache-2.0 license.
