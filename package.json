@@ -1,7 +1,7 @@
 {
   "name": "fcecom-bridge-api-bigcommerce",
   "description": "FirstSpirit Connect for E-Commerce - BigCommerce Bridge",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -16,13 +16,13 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "axios": "^1.5.1",
-    "dotenv": "^16.3.1",
-    "fcecom-bridge-commons": "^2.2.0"
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
+    "fcecom-bridge-commons": "^2.2.1"
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nodemon": "^3.0.1",
-    "prettier": "^3.0.3"
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5"
   }
 }
