@@ -62,22 +62,38 @@ const buildCategoryTree = (categories, parentId = 0) => {
 };
 
 /**
+ * This method filters categories by their label based on the given keyword.
+ * @param {string} keyword Keyword to filter the categories by.
+ * @param {any[]} categories Categories to filter.
+ * @return {any[]} Filtered categories.
+ */
+const filterCategories = (keyword, categories) => {
+    const query = keyword.toLowerCase();
+    return categories.filter(category => category.label?.toLowerCase().includes(query));
+}
+
+/**
  * This method fetches all categories and returns them as a flat list structure.
  * @see SwaggerUI {@link http://localhost:3000/api/#/categories/get_categories}
  *
  * @param {number | string} [parentId] ID of the parent category to filter categories by.
+ * @param {string} [keyword] Keyword to filter the categories by.
  * @param {string} [lang] Language of the request.
  * @param {number} [page=1] Number of the page to retrieve.
  * @return Promise<{ hasNext: boolean, total: number, categories: any[]}> The category tree.
  */
-const categoriesGet = async (parentId, lang, page = 1) => {
+const categoriesGet = async (parentId, keyword, lang, page = 1) => {
     parentId = parentId && getNumber(parentId, 'parentId');
 
     const categories = await fetchCategories();
 
     const tree = buildCategoryTree(categories, parentId);
 
-    const list = flattenCategories(tree);
+    let list = flattenCategories(tree);
+
+    if (keyword) {
+        list = filterCategories(keyword, list);
+    }
 
     // Pagination
     const result = [];

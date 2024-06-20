@@ -28,7 +28,7 @@ describe('CategoriesService', () => {
         });
     });
     describe('categoriesGet', () => {
-        it('returns the categories as list (no parent ID, no pagination)', async () => {
+        it('returns the categories as list (no parent ID, no keyword, no pagination)', async () => {
             httpClient.get.mockResolvedValue({ data: data.categoriesGet, status: 200 });
 
             const result = await service.categoriesGet();
@@ -57,10 +57,10 @@ describe('CategoriesService', () => {
             expect(result.categories[1].id).toEqual(21);
             expect(result.categories[2].id).toEqual(22);
         });
-        it('returns the categories as list (with pagination)', async () => {
+        it('returns the categories as list (no keyword, with pagination)', async () => {
             httpClient.get.mockResolvedValue({ data: data.categoriesGet, status: 200 });
 
-            const result = await service.categoriesGet(0, 'EN', 123);
+            const result = await service.categoriesGet(0, undefined, 'EN', 123);
 
             expect(httpClient.get.mock.calls[0][0]).toEqual(
                 '/v3/catalog/categories?include_fields=id%2Cparent_id%2Cname%2Csort_order%2Ccustom_url&limit=250'
@@ -68,6 +68,34 @@ describe('CategoriesService', () => {
             expect(result.categories.length).toEqual(0);
             expect(result.hasNext).toEqual(false);
             expect(result.total).toEqual(data.categoriesGet.data.length);
+        });
+        it('returns the categories as list (with keyword and pagination)', async () => {
+            const expectedCategoryTotal = 1;
+            httpClient.get.mockResolvedValue({ data: data.categoriesGet, status: 200 });
+
+            const result = await service.categoriesGet(0, 'Bath', 'EN', 1);
+
+            expect(httpClient.get.mock.calls[0][0]).toEqual(
+                '/v3/catalog/categories?include_fields=id%2Cparent_id%2Cname%2Csort_order%2Ccustom_url&limit=250'
+            );
+            expect(result.categories.length).toEqual(1);
+            expect(result.categories[0].label).toEqual("Bath");
+            expect(result.hasNext).toEqual(false);
+            expect(result.total).toEqual(expectedCategoryTotal);
+        });
+        it('returns the categories as list (with parentId, keyword and pagination)', async () => {
+            const expectedCategoryTotal = 1;
+            httpClient.get.mockResolvedValue({ data: data.categoriesGet, status: 200 });
+
+            const result = await service.categoriesGet(18, 'Garden', 'EN', 1);
+
+            expect(httpClient.get.mock.calls[0][0]).toEqual(
+                '/v3/catalog/categories?include_fields=id%2Cparent_id%2Cname%2Csort_order%2Ccustom_url&limit=250'
+            );
+
+            expect(result.categories.length).toEqual(1);
+            expect(result.hasNext).toEqual(false);
+            expect(result.total).toEqual(expectedCategoryTotal);
         });
     });
     describe('categoryTreeGet', () => {
