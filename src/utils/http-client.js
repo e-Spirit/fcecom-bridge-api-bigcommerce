@@ -36,7 +36,7 @@ client.interceptors.response.use(
         } else {
             logger.logError(LOGGING_NAME, `↳ ${message}`);
         }
-        return Promise.reject({ error: true, data, status });
+        return Promise.reject({ error: true, data: data?.title ?? data, status });
     }
 );
 
