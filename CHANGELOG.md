@@ -1,3 +1,9 @@
+## [2.5.4](https://github.com/e-Spirit/fcecom-bridge-api-bigcommerce/compare/v2.5.3...v2.5.4) (2024-11-29)
+
+### Changes
+* Updated fcecom-bridge-commons to v2.4.2.
+* Added missing x-total header to /categories/tree and ids endpoints.
+
 ## [2.5.3](https://github.com/e-Spirit/fcecom-bridge-api-bigcommerce/compare/v2.5.2...v2.5.3) (2024-10-16)
 
 ### Changes

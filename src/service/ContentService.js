@@ -135,9 +135,11 @@ const contentContentIdsGet = async (contentIds) => {
         .map((id) => parseInt(id) || null) // Parse IDs to numbers
         .filter((id) => id !== null); // Ignore invalid numbers
 
-    const { content } = await contentGet();
+    let { content } = await contentGet();
+    content = content.filter(({ id }) => contentIds.includes(id));
     return {
-        content: content.filter(({ id }) => contentIds.includes(id))
+        content,
+        total: content.length
     };
 };
 

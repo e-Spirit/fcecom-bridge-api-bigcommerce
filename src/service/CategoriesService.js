@@ -73,6 +73,14 @@ const filterCategories = (keyword, categories) => {
 }
 
 /**
+ * Recursively counts the total number of categories in a category tree structure.
+ * @param {any[]} tree Category tree.
+ * @returns {number} Total count of all categories including nested children.
+ */
+const countCategories = (tree) =>
+    tree.reduce((count, { children = [] }) => count + 1 + countCategories(children), 0);
+
+/**
  * This method fetches all categories and returns them as a flat list structure.
  * @see SwaggerUI {@link http://localhost:3000/api/#/categories/get_categories}
  *
@@ -118,7 +126,9 @@ const categoryTreeGet = async (parentId) => {
 
     const tree = buildCategoryTree(categories, parentId);
 
-    return { categorytree: tree, total: categories.length, hasNext: false };
+    const total = countCategories(tree);
+
+    return { categorytree: tree, total };
 };
 
 /**

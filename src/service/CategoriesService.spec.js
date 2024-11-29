@@ -113,7 +113,6 @@ describe('CategoriesService', () => {
             expect(result.categorytree[1].children[1].children[0].id).toEqual(22);
             expect(result.categorytree[1].children[1].id).toEqual(21);
             expect(result.categorytree[2].id).toEqual(20);
-            expect(result.hasNext).toEqual(false);
             expect(result.total).toEqual(data.categoriesGet.data.length);
         });
         it('returns the categories as tree (with parent ID)', async () => {
@@ -127,8 +126,7 @@ describe('CategoriesService', () => {
             expect(result.categorytree[0].id).toEqual(19);
             expect(result.categorytree[1].id).toEqual(21);
             expect(result.categorytree[1].children[0].id).toEqual(22);
-            expect(result.hasNext).toEqual(false);
-            expect(result.total).toEqual(data.categoriesGet.data.length);
+            expect(result.total).toEqual(data.categoriesGet.data.length - 3);
         });
     });
 
